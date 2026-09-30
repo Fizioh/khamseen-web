@@ -5,7 +5,7 @@ import { useState } from "react";
 import { AgentGraph } from "@/components/graph/AgentGraph";
 import { LifecycleRail } from "@/components/graph/LifecycleRail";
 import { MobileTimeline } from "@/components/graph/MobileTimeline";
-import { AgentInspector } from "@/components/inspector/AgentInspector";
+import { HeroAgentCarousel } from "@/components/inspector/HeroAgentCarousel";
 import { CtaButton } from "@/components/design-system/CtaButton";
 import { SystemPanel } from "@/components/design-system/SystemPanel";
 import { agentMap } from "@/data/agents";
@@ -15,7 +15,13 @@ import type { Agent } from "@/types/runtime";
 
 export function HeroSection() {
   const [selected, setSelected] = useState<Agent | null>(agentMap.khepri);
+  const [graphSelectionEpoch, setGraphSelectionEpoch] = useState(0);
   const reduced = usePrefersReducedMotion();
+
+  const selectFromGraph = (agent: Agent | null) => {
+    setSelected(agent);
+    setGraphSelectionEpoch((n) => n + 1);
+  };
 
   return (
     <section
@@ -95,7 +101,7 @@ export function HeroSection() {
                   <AgentGraph
                     variant="compact"
                     selectedId={selected === null ? null : selected.id}
-                    onSelect={setSelected}
+                    onSelect={selectFromGraph}
                     pulseEdgeIds={["e-nadir-khepri", "e-khepri-aegis"]}
                   />
                 </div>
@@ -105,7 +111,11 @@ export function HeroSection() {
               <MobileTimeline />
             </motion.div>
             <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.48 }}>
-              <AgentInspector agent={selected} />
+              <HeroAgentCarousel
+                selected={selected}
+                onSelect={setSelected}
+                graphSelectionEpoch={graphSelectionEpoch}
+              />
             </motion.div>
           </motion.div>
         </div>

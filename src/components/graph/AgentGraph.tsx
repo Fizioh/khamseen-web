@@ -2,6 +2,13 @@
 
 import { motion } from "framer-motion";
 import { useCallback, useMemo, useState } from "react";
+import { GraphCanvas, useGraphStyle } from "@/components/graph/GraphCanvas";
+import {
+  curvedEdgePath,
+  stateAccent,
+  tierNodeStyle,
+  trimEdgeEndpoints,
+} from "@/components/graph/graph-visual";
 import { agents, agentMap } from "@/data/agents";
 import { topologyEdges } from "@/data/topology";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
@@ -24,17 +31,18 @@ function nodeRadius(tier: Agent["tier"]) {
   return 18;
 }
 
-export function AgentGraph({
+function AgentGraphSvg({
   variant = "full",
   selectedId,
   onSelect,
   pulseEdgeIds = [],
   highlightAgentIds = [],
   edgesActive = true,
-  className = "",
-}: AgentGraphProps) {
+}: Omit<AgentGraphProps, "className">) {
   const reduced = usePrefersReducedMotion();
+  const { edgeActive, edgeGlow, nodeGlow } = useGraphStyle();
   const [internalSelected, setInternalSelected] = useState<string | null>("khepri");
+  const [hoverId, setHoverId] = useState<string | null>(null);
   const isControlled = selectedId !== undefined;
   const activeId = isControlled ? selectedId : internalSelected;
 
@@ -68,136 +76,177 @@ export function AgentGraph({
   const h = 420;
 
   return (
-    <div className={`relative ${className}`}>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        className="h-auto w-full max-h-[420px]"
-        role="group"
-        aria-label="Agent orchestration topology"
-      >
-        <defs>
-          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+    <>
+      {edges.map((edge) => {
+        const from = agentMap[edge.from];
+        const to = agentMap[edge.to];
+        const r1 = nodeRadius(from.tier);
+        const r2 = nodeRadius(to.tier);
+        const rawX1 = from.x * w;
+        const rawY1 = from.y * h;
+        const rawX2 = to.x * w;
+        const rawY2 = to.y * h;
+        const { x1, y1, x2, y2 } = trimEdgeEndpoints(rawX1, rawY1, rawX2, rawY2, r1, r2);
+        const path = curvedEdgePath(x1, y1, x2, y2);
+        const pulsing = pulseEdgeIds.includes(edge.id);
+        const lit = pulsing && edgesActive;
+        return (
+          <g key={edge.id}>
             <path
-              d="M 20 0 L 0 0 0 20"
+              d={path}
               fill="none"
-              stroke="rgba(255,255,255,0.03)"
-              strokeWidth="1"
+              stroke="rgba(255,255,255,0.06)"
+              strokeWidth={3}
+              strokeLinecap="round"
             />
-          </pattern>
-        </defs>
-        <rect width={w} height={h} fill="url(#grid)" />
-
-        {edges.map((edge) => {
-          const from = agentMap[edge.from];
-          const to = agentMap[edge.to];
-          const x1 = from.x * w;
-          const y1 = from.y * h;
-          const x2 = to.x * w;
-          const y2 = to.y * h;
-          const pulsing = pulseEdgeIds.includes(edge.id);
-          return (
-            <g key={edge.id}>
-              <line
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="rgba(255,255,255,0.12)"
-                strokeWidth="1"
+            <path
+              d={path}
+              fill="none"
+              stroke={lit ? `url(#${edgeActive})` : "rgba(255,255,255,0.14)"}
+              strokeWidth={lit ? 1.4 : 1}
+              strokeLinecap="round"
+              filter={lit ? `url(#${edgeGlow})` : undefined}
+            />
+            {edge.label && (
+              <text
+                x={(x1 + x2) / 2}
+                y={(y1 + y2) / 2 - 6}
+                textAnchor="middle"
+                className="fill-muted font-mono text-[7px] tracking-wide pointer-events-none select-none opacity-70"
+              >
+                {edge.label}
+              </text>
+            )}
+            {lit && !reduced && (
+              <motion.circle
+                r="2.5"
+                fill="#c8dce8"
+                filter={`url(#${edgeGlow})`}
+                initial={{ cx: x1, cy: y1 }}
+                animate={{ cx: [x1, x2], cy: [y1, y2] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
               />
-              {pulsing && edgesActive && !reduced && (
-                <motion.circle
-                  r="3"
-                  fill="rgba(232,232,232,0.9)"
-                  initial={{ cx: x1, cy: y1 }}
-                  animate={{ cx: [x1, x2], cy: [y1, y2] }}
-                  transition={{
-                    duration: 1.8,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                />
-              )}
-            </g>
-          );
-        })}
+            )}
+          </g>
+        );
+      })}
 
-        {visibleAgents.map((agent) => {
-          const cx = agent.x * w;
-          const cy = agent.y * h;
-          const r = nodeRadius(agent.tier);
-          const selected = activeId === agent.id;
-          const highlighted = highlightAgentIds.includes(agent.id);
-          return (
-            <g key={agent.id}>
-              {highlighted && !reduced && edgesActive && (
-                <motion.circle
-                  cx={cx}
-                  cy={cy}
-                  fill="none"
-                  stroke="rgba(232,232,232,0.35)"
-                  strokeWidth="1"
-                  animate={{
-                    r: [r + 7, r + 10, r + 7],
-                    opacity: [0.2, 0.75, 0.2],
-                  }}
-                  transition={{ duration: 1.6, repeat: Infinity }}
-                />
-              )}
+      {visibleAgents.map((agent) => {
+        const cx = agent.x * w;
+        const cy = agent.y * h;
+        const r = nodeRadius(agent.tier);
+        const selected = activeId === agent.id;
+        const hovered = hoverId === agent.id;
+        const highlighted = highlightAgentIds.includes(agent.id);
+        const accent = stateAccent(agent.runtime.state);
+        const tier = tierNodeStyle(agent.tier);
+        const focus = selected || hovered || highlighted;
+
+        return (
+          <g key={agent.id}>
+            {(highlighted || selected) && !reduced && edgesActive && (
               <motion.circle
                 cx={cx}
                 cy={cy}
-                r={r + (selected ? 4 : 0)}
                 fill="none"
-                stroke={selected ? "rgba(232,232,232,0.5)" : "transparent"}
+                stroke={accent}
                 strokeWidth="1"
-                animate={
-                  reduced
-                    ? {}
-                    : selected || highlighted
-                      ? { opacity: [0.4, 0.9, 0.4] }
-                      : {}
-                }
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <circle
-                cx={cx}
-                cy={cy}
-                r={r}
-                fill={agent.tier === "human" ? "#1a1a1a" : "#111111"}
-                stroke={selected ? "#e8e8e8" : "rgba(255,255,255,0.2)"}
-                strokeWidth={selected ? 1.5 : 1}
-                className="cursor-pointer"
-                tabIndex={0}
-                role="button"
-                aria-label={`${agent.codename}, ${agent.role}, state ${agent.runtime.state}`}
-                onClick={() => select(agent.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    select(agent.id);
-                  }
+                opacity={0.45}
+                animate={{
+                  r: [r + 8, r + 14, r + 8],
+                  opacity: [0.15, 0.5, 0.15],
                 }}
+                transition={{ duration: 2.2, repeat: Infinity }}
               />
-              <text
-                x={cx}
-                y={cy - r - 8}
-                textAnchor="middle"
-                className="fill-foreground font-mono text-[9px] tracking-wider pointer-events-none select-none"
-              >
-                {agent.codename}
-              </text>
-              {selected && (
-                <foreignObject x={cx - 36} y={cy + r + 4} width="72" height="20">
-                  <div className="flex justify-center">
-                    <StateBadge state={agent.runtime.state} />
-                  </div>
-                </foreignObject>
-              )}
-            </g>
-          );
-        })}
-      </svg>
-    </div>
+            )}
+            <circle
+              cx={cx}
+              cy={cy}
+              r={r + 6}
+              fill="none"
+              stroke={focus ? accent : "rgba(255,255,255,0.04)"}
+              strokeWidth={focus ? 1 : 0.75}
+              opacity={focus ? 0.9 : 0.5}
+            />
+            <circle
+              cx={cx}
+              cy={cy}
+              r={r + 2}
+              fill={tier.fillOuter}
+              stroke={focus ? accent : tier.ring}
+              strokeWidth={selected ? 1.75 : 1}
+              filter={focus ? `url(#${nodeGlow})` : undefined}
+              className="cursor-pointer"
+              tabIndex={0}
+              role="button"
+              aria-label={`${agent.codename}, ${agent.role}, state ${agent.runtime.state}`}
+              onClick={() => select(agent.id)}
+              onMouseEnter={() => setHoverId(agent.id)}
+              onMouseLeave={() => setHoverId(null)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  select(agent.id);
+                }
+              }}
+            />
+            <circle cx={cx} cy={cy} r={r - 4} fill={tier.fillInner} pointerEvents="none" />
+            <circle
+              cx={cx}
+              cy={cy}
+              r={3}
+              fill={accent}
+              opacity={agent.runtime.state === "IDLE" ? 0.35 : 0.95}
+              pointerEvents="none"
+            />
+            <rect
+              x={cx - 42}
+              y={cy - r - 22}
+              width={84}
+              height={14}
+              rx={2}
+              fill="rgba(7,7,8,0.85)"
+              stroke="rgba(255,255,255,0.06)"
+              pointerEvents="none"
+            />
+            <text
+              x={cx}
+              y={cy - r - 12}
+              textAnchor="middle"
+              className={`font-mono text-[8px] tracking-wider pointer-events-none select-none ${
+                focus ? "fill-foreground" : "fill-foreground/75"
+              }`}
+            >
+              {agent.codename}
+            </text>
+            {selected && (
+              <foreignObject x={cx - 40} y={cy + r + 6} width="80" height="22">
+                <div className="flex justify-center">
+                  <StateBadge state={agent.runtime.state} />
+                </div>
+              </foreignObject>
+            )}
+          </g>
+        );
+      })}
+    </>
+  );
+}
+
+export function AgentGraph(props: AgentGraphProps) {
+  const { className = "", variant = "full", ...rest } = props;
+  return (
+    <GraphCanvas
+      width={560}
+      height={420}
+      ariaLabel="Agent orchestration topology"
+      className={className}
+    >
+      <AgentGraphSvg variant={variant} {...rest} />
+    </GraphCanvas>
   );
 }

@@ -2,6 +2,8 @@
 
 import { motion, useInView } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { GraphCanvas, useGraphStyle } from "@/components/graph/GraphCanvas";
+import { curvedEdgePath, trimEdgeEndpoints } from "@/components/graph/graph-visual";
 import {
   integrationChannels,
   integrationHubLabel,
@@ -14,57 +16,152 @@ const H = 400;
 const CX = W / 2;
 const CY = H / 2 - 10;
 const R = 150;
+const HUB_R = 38;
 
 function polar(angleDeg: number) {
   const rad = (angleDeg * Math.PI) / 180;
   return { x: CX + R * Math.cos(rad), y: CY + R * Math.sin(rad) };
 }
 
+function HubDiagram({
+  activeChannelId,
+  selectedId,
+  onSelect,
+  inView,
+}: {
+  activeChannelId: string | null;
+  selectedId: string;
+  onSelect: (id: string) => void;
+  inView: boolean;
+}) {
+  const reduced = usePrefersReducedMotion();
+  const { edgeActive, edgeGlow, nodeGlow } = useGraphStyle();
+  const [hoverId, setHoverId] = useState<string | null>(null);
+
+  return (
+    <>
+      {integrationChannels.map((channel) => {
+        const { x, y } = polar(channel.angle);
+        const { x1, y1, x2, y2 } = trimEdgeEndpoints(CX, CY, x, y, HUB_R, 20);
+        const path = curvedEdgePath(x1, y1, x2, y2, 0.08);
+        const active = inView && channel.id === activeChannelId;
+        const selected = channel.id === selectedId;
+        const lit = active || selected;
+        return (
+          <g key={channel.id}>
+            <path d={path} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={2.5} />
+            <path
+              d={path}
+              fill="none"
+              stroke={lit ? `url(#${edgeActive})` : "rgba(255,255,255,0.12)"}
+              strokeWidth={lit ? 1.35 : 0.9}
+              filter={lit ? `url(#${edgeGlow})` : undefined}
+            />
+            {active && !reduced && (
+              <motion.circle
+                r={2.5}
+                fill="#7a9ec4"
+                filter={`url(#${edgeGlow})`}
+                initial={{ cx: x1, cy: y1 }}
+                animate={{ cx: [x1, x2], cy: [y1, y2] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              />
+            )}
+            <ChannelNode
+              channel={channel}
+              x={x}
+              y={y}
+              selected={selected}
+              active={active}
+              hovered={hoverId === channel.id}
+              nodeGlow={nodeGlow}
+              onSelect={() => onSelect(channel.id)}
+              onHover={(v) => setHoverId(v ? channel.id : null)}
+            />
+          </g>
+        );
+      })}
+      <motion.circle
+        cx={CX}
+        cy={CY}
+        r={HUB_R + 8}
+        fill="none"
+        stroke="rgba(122,158,196,0.25)"
+        strokeWidth="1"
+        animate={reduced || !inView ? {} : { opacity: [0.3, 0.7, 0.3] }}
+        transition={{ duration: 3, repeat: Infinity }}
+      />
+      <circle
+        cx={CX}
+        cy={CY}
+        r={HUB_R}
+        fill="#0c0c0e"
+        stroke="rgba(232,232,234,0.4)"
+        strokeWidth="1.5"
+        filter={`url(#${nodeGlow})`}
+      />
+      <circle cx={CX} cy={CY} r={HUB_R - 8} fill="#080809" />
+      <circle cx={CX} cy={CY} r={4} fill="#7a9ec4" />
+      <text
+        x={CX}
+        y={CY - 6}
+        textAnchor="middle"
+        className="fill-foreground font-mono text-[7px] tracking-widest pointer-events-none"
+      >
+        {integrationHubLabel}
+      </text>
+      <text
+        x={CX}
+        y={CY + 8}
+        textAnchor="middle"
+        className="fill-muted font-mono text-[7px] pointer-events-none"
+      >
+        GATEWAY
+      </text>
+    </>
+  );
+}
+
 function ChannelNode({
   channel,
-  active,
-  onSelect,
+  x,
+  y,
   selected,
+  active,
+  hovered,
+  nodeGlow,
+  onSelect,
+  onHover,
 }: {
   channel: IntegrationChannel;
-  active: boolean;
-  onSelect: () => void;
+  x: number;
+  y: number;
   selected: boolean;
+  active: boolean;
+  hovered: boolean;
+  nodeGlow: string;
+  onSelect: () => void;
+  onHover: (v: boolean) => void;
 }) {
-  const { x, y } = polar(channel.angle);
+  const r = selected ? 21 : 18;
+  const focus = selected || active || hovered;
   return (
     <g>
-      <line
-        x1={CX}
-        y1={CY}
-        x2={x}
-        y2={y}
-        stroke={
-          active || selected ? "rgba(122,158,196,0.45)" : "rgba(255,255,255,0.08)"
-        }
-        strokeWidth={active || selected ? 1.5 : 1}
-      />
-      {active && (
-        <motion.circle
-          r={3}
-          fill="rgba(122,158,196,0.95)"
-          initial={{ cx: CX, cy: CY }}
-          animate={{ cx: [CX, x], cy: [CY, y] }}
-          transition={{ duration: 1.4, ease: "linear" }}
-        />
-      )}
       <circle
         cx={x}
         cy={y}
-        r={selected ? 22 : 18}
+        r={r + 4}
         fill="#0f0f11"
-        stroke={selected || active ? "#7a9ec4" : "rgba(255,255,255,0.22)"}
-        strokeWidth={selected ? 1.5 : 1}
+        stroke={focus ? "#7a9ec4" : "rgba(255,255,255,0.18)"}
+        strokeWidth={focus ? 1.5 : 1}
+        filter={focus ? `url(#${nodeGlow})` : undefined}
         className="cursor-pointer"
         role="button"
         tabIndex={0}
         aria-label={`${channel.label} integration`}
         onClick={onSelect}
+        onMouseEnter={() => onHover(true)}
+        onMouseLeave={() => onHover(false)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -72,19 +169,31 @@ function ChannelNode({
           }
         }}
       />
+      <circle cx={x} cy={y} r={r - 6} fill="#0a0a0c" pointerEvents="none" />
+      <circle cx={x} cy={y} r={2.5} fill={focus ? "#7a9ec4" : "#5a5a62"} pointerEvents="none" />
+      <rect
+        x={x - 36}
+        y={y - r - 20}
+        width={72}
+        height={13}
+        rx={2}
+        fill="rgba(7,7,8,0.9)"
+        stroke="rgba(255,255,255,0.06)"
+        pointerEvents="none"
+      />
       <text
         x={x}
-        y={y - 24}
+        y={y - r - 10}
         textAnchor="middle"
-        className="fill-foreground font-mono text-[9px] tracking-wide pointer-events-none select-none"
+        className="fill-foreground font-mono text-[8px] tracking-wide pointer-events-none select-none"
       >
         {channel.label.toUpperCase()}
       </text>
       <text
         x={x}
-        y={y + 32}
+        y={y + r + 14}
         textAnchor="middle"
-        className="fill-muted font-mono text-[8px] pointer-events-none select-none"
+        className="fill-muted font-mono text-[7px] pointer-events-none select-none"
       >
         {channel.subtitle}
       </text>
@@ -116,59 +225,14 @@ export function IntegrationHub() {
 
   return (
     <div ref={ref} className="grid gap-6 lg:grid-cols-[1.2fr_1fr] lg:items-start">
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="h-auto w-full"
-        role="img"
-        aria-label="Integration hub diagram"
-      >
-        <defs>
-          <pattern id="int-grid" width="16" height="16" patternUnits="userSpaceOnUse">
-            <path
-              d="M 16 0 L 0 0 0 16"
-              fill="none"
-              stroke="rgba(255,255,255,0.03)"
-              strokeWidth="1"
-            />
-          </pattern>
-        </defs>
-        <rect width={W} height={H} fill="url(#int-grid)" />
-        <motion.circle
-          cx={CX}
-          cy={CY}
-          r={36}
-          fill="#111111"
-          stroke="rgba(232,232,232,0.35)"
-          strokeWidth="1.5"
-          animate={reduced || !inView ? {} : { opacity: [0.85, 1, 0.85] }}
-          transition={{ duration: 3, repeat: Infinity }}
+      <GraphCanvas width={W} height={H} ariaLabel="Integration hub diagram" maxHeight="400px">
+        <HubDiagram
+          activeChannelId={activeId}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          inView={inView}
         />
-        <text
-          x={CX}
-          y={CY - 4}
-          textAnchor="middle"
-          className="fill-foreground font-mono text-[8px] tracking-widest pointer-events-none"
-        >
-          {integrationHubLabel}
-        </text>
-        <text
-          x={CX}
-          y={CY + 10}
-          textAnchor="middle"
-          className="fill-muted font-mono text-[7px] pointer-events-none"
-        >
-          GATEWAY
-        </text>
-        {integrationChannels.map((ch) => (
-          <ChannelNode
-            key={ch.id}
-            channel={ch}
-            active={inView && ch.id === activeId}
-            selected={ch.id === selectedId}
-            onSelect={() => setSelectedId(ch.id)}
-          />
-        ))}
-      </svg>
+      </GraphCanvas>
       <div className="font-mono text-xs">
         <p className="text-[10px] tracking-widest text-muted uppercase">Selected channel</p>
         <p className="mt-2 text-sm text-foreground">{selected.label}</p>
