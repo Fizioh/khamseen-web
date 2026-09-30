@@ -16,7 +16,6 @@ export default function Home() {
   return (
     <>
       <SiteHeader />
-      <ScrollLifecycleBar />
       <main>
         <HeroSection />
         <TrustStrip />
@@ -24,6 +23,7 @@ export default function Home() {
         <OpsControlRoom />
         <AutonomyLadder />
         <ModuleSnippetBlock />
+        <ScrollLifecycleBar />
         <NarrativeSections />
         <WaitlistCta />
       </main>

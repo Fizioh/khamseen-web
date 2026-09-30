@@ -8,8 +8,6 @@ import { useRef, useState } from "react";
 
 import { ScrollReactiveGraph } from "@/components/graph/ScrollReactiveGraph";
 
-import { LifecycleRail } from "@/components/graph/LifecycleRail";
-
 import { ExecutionFlow } from "@/components/execution/ExecutionFlow";
 
 import {
@@ -94,7 +92,7 @@ function NarrativeBlock({
 
       ref={ref}
 
-      className="scroll-mt-24 py-14 md:py-20"
+      className="scroll-mt-28 py-14 md:scroll-mt-32 md:py-20"
 
       {...(stage ? { "data-lifecycle-stage": stage } : {})}
 
@@ -118,11 +116,13 @@ function NarrativeBlock({
 
         {stage && (
 
-          <div className="mb-6">
+          <p className="mb-4 font-mono text-[10px] tracking-widest text-muted">
 
-            <LifecycleRail activeStage={stage} compact />
+            KERNEL STAGE{" "}
 
-          </div>
+            <span className="text-accent">{stage}</span>
+
+          </p>
 
         )}
 
