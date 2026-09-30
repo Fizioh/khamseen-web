@@ -19,3 +19,26 @@ export const staggerContainer: Variants = {
     transition: { staggerChildren: 0.06 },
   },
 };
+
+export const heroStagger: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.05 },
+  },
+};
+
+export const heroItem: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0 },
+};
+
+export const heroPanel: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: { opacity: 1, y: 0, scale: 1 },
+};
+
+export const inspectorSwap: Variants = {
+  hidden: { opacity: 0, x: 8 },
+  visible: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -8 },
+};

@@ -26,5 +26,13 @@ export function useExecutionSimulation(active: boolean) {
     return () => timers.forEach(clearTimeout);
   }, [active, reduced]);
 
-  return { visibleCount, steps: executionSteps.slice(0, visibleCount) };
+  const steps = executionSteps.slice(0, visibleCount);
+  const activeStep = steps.length ? steps[steps.length - 1] : null;
+
+  return {
+    visibleCount,
+    steps,
+    activeStepId: activeStep?.id ?? null,
+    activeAgentId: activeStep?.agentId ?? null,
+  };
 }

@@ -13,6 +13,8 @@ interface AgentGraphProps {
   selectedId?: string | null;
   onSelect?: (agent: Agent | null) => void;
   pulseEdgeIds?: string[];
+  highlightAgentIds?: string[];
+  edgesActive?: boolean;
   className?: string;
 }
 
@@ -27,6 +29,8 @@ export function AgentGraph({
   selectedId,
   onSelect,
   pulseEdgeIds = [],
+  highlightAgentIds = [],
+  edgesActive = true,
   className = "",
 }: AgentGraphProps) {
   const reduced = usePrefersReducedMotion();
@@ -101,7 +105,7 @@ export function AgentGraph({
                 stroke="rgba(255,255,255,0.12)"
                 strokeWidth="1"
               />
-              {pulsing && !reduced && (
+              {pulsing && edgesActive && !reduced && (
                 <motion.circle
                   r="3"
                   fill="rgba(232,232,232,0.9)"
@@ -123,8 +127,23 @@ export function AgentGraph({
           const cy = agent.y * h;
           const r = nodeRadius(agent.tier);
           const selected = activeId === agent.id;
+          const highlighted = highlightAgentIds.includes(agent.id);
           return (
             <g key={agent.id}>
+              {highlighted && !reduced && edgesActive && (
+                <motion.circle
+                  cx={cx}
+                  cy={cy}
+                  fill="none"
+                  stroke="rgba(232,232,232,0.35)"
+                  strokeWidth="1"
+                  animate={{
+                    r: [r + 7, r + 10, r + 7],
+                    opacity: [0.2, 0.75, 0.2],
+                  }}
+                  transition={{ duration: 1.6, repeat: Infinity }}
+                />
+              )}
               <motion.circle
                 cx={cx}
                 cy={cy}
@@ -132,7 +151,13 @@ export function AgentGraph({
                 fill="none"
                 stroke={selected ? "rgba(232,232,232,0.5)" : "transparent"}
                 strokeWidth="1"
-                animate={reduced ? {} : selected ? { opacity: [0.4, 0.9, 0.4] } : {}}
+                animate={
+                  reduced
+                    ? {}
+                    : selected || highlighted
+                      ? { opacity: [0.4, 0.9, 0.4] }
+                      : {}
+                }
                 transition={{ duration: 2, repeat: Infinity }}
               />
               <circle
