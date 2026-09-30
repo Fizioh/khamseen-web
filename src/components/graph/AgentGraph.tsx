@@ -3,8 +3,12 @@
 import { motion } from "framer-motion";
 import { useCallback, useMemo, useState } from "react";
 import { GraphCanvas, useGraphStyle } from "@/components/graph/GraphCanvas";
+import { AgentNodeShape } from "@/components/graph/AgentNodeShape";
 import {
   curvedEdgePath,
+  quadraticControl,
+  quadraticPoint,
+  regularPolygonPath,
   stateAccent,
   tierNodeStyle,
   trimEdgeEndpoints,
@@ -40,7 +44,7 @@ function AgentGraphSvg({
   edgesActive = true,
 }: Omit<AgentGraphProps, "className">) {
   const reduced = usePrefersReducedMotion();
-  const { edgeActive, edgeGlow, nodeGlow } = useGraphStyle();
+  const { edgeActive, edgeGlow, nodeGlow, edgeArrow } = useGraphStyle();
   const [internalSelected, setInternalSelected] = useState<string | null>("khepri");
   const [hoverId, setHoverId] = useState<string | null>(null);
   const isControlled = selectedId !== undefined;
@@ -88,6 +92,8 @@ function AgentGraphSvg({
         const rawY2 = to.y * h;
         const { x1, y1, x2, y2 } = trimEdgeEndpoints(rawX1, rawY1, rawX2, rawY2, r1, r2);
         const path = curvedEdgePath(x1, y1, x2, y2);
+        const ctrl = quadraticControl(x1, y1, x2, y2);
+        const mid = quadraticPoint(x1, y1, ctrl.cx, ctrl.cy, x2, y2, 0.72);
         const pulsing = pulseEdgeIds.includes(edge.id);
         const lit = pulsing && edgesActive;
         return (
@@ -105,8 +111,19 @@ function AgentGraphSvg({
               stroke={lit ? `url(#${edgeActive})` : "rgba(255,255,255,0.14)"}
               strokeWidth={lit ? 1.4 : 1}
               strokeLinecap="round"
+              strokeDasharray={lit ? undefined : "3 5"}
               filter={lit ? `url(#${edgeGlow})` : undefined}
+              markerEnd={`url(#${edgeArrow})`}
             />
+            {!lit && (
+              <circle
+                cx={mid.x}
+                cy={mid.y}
+                r={1.2}
+                fill="rgba(255,255,255,0.12)"
+                pointerEvents="none"
+              />
+            )}
             {edge.label && (
               <text
                 x={(x1 + x2) / 2}
@@ -163,27 +180,36 @@ function AgentGraphSvg({
                 transition={{ duration: 2.2, repeat: Infinity }}
               />
             )}
-            <circle
+            {agent.tier === "human" ? (
+              <path
+                d={regularPolygonPath(cx, cy, r + 8, 6, -90)}
+                fill="none"
+                stroke={focus ? accent : "rgba(255,255,255,0.04)"}
+                strokeWidth={focus ? 1 : 0.75}
+                opacity={focus ? 0.9 : 0.5}
+                pointerEvents="none"
+              />
+            ) : (
+              <circle
+                cx={cx}
+                cy={cy}
+                r={r + 6}
+                fill="none"
+                stroke={focus ? accent : "rgba(255,255,255,0.04)"}
+                strokeWidth={focus ? 1 : 0.75}
+                opacity={focus ? 0.9 : 0.5}
+                pointerEvents="none"
+              />
+            )}
+            <AgentNodeShape
+              agent={agent}
               cx={cx}
               cy={cy}
-              r={r + 6}
-              fill="none"
-              stroke={focus ? accent : "rgba(255,255,255,0.04)"}
-              strokeWidth={focus ? 1 : 0.75}
-              opacity={focus ? 0.9 : 0.5}
-            />
-            <circle
-              cx={cx}
-              cy={cy}
-              r={r + 2}
+              r={r}
               fill={tier.fillOuter}
               stroke={focus ? accent : tier.ring}
               strokeWidth={selected ? 1.75 : 1}
               filter={focus ? `url(#${nodeGlow})` : undefined}
-              className="cursor-pointer"
-              tabIndex={0}
-              role="button"
-              aria-label={`${agent.codename}, ${agent.role}, state ${agent.runtime.state}`}
               onClick={() => select(agent.id)}
               onMouseEnter={() => setHoverId(agent.id)}
               onMouseLeave={() => setHoverId(null)}

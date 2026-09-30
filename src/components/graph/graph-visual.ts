@@ -64,6 +64,51 @@ export function tierNodeStyle(tier: Agent["tier"]) {
   };
 }
 
+export function regularPolygonPath(
+  cx: number,
+  cy: number,
+  radius: number,
+  sides: number,
+  rotationDeg = -90,
+) {
+  const pts: string[] = [];
+  for (let i = 0; i < sides; i += 1) {
+    const angle = (rotationDeg * Math.PI) / 180 + (2 * Math.PI * i) / sides;
+    pts.push(`${cx + radius * Math.cos(angle)},${cy + radius * Math.sin(angle)}`);
+  }
+  return `M ${pts.join(" L ")} Z`;
+}
+
+export function quadraticPoint(
+  x1: number,
+  y1: number,
+  cx: number,
+  cy: number,
+  x2: number,
+  y2: number,
+  t: number,
+) {
+  const u = 1 - t;
+  return {
+    x: u * u * x1 + 2 * u * t * cx + t * t * x2,
+    y: u * u * y1 + 2 * u * t * cy + t * t * y2,
+  };
+}
+
+export function quadraticControl(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  bend = 0.12,
+) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2;
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  return { cx: mx - dy * bend, cy: my + dx * bend };
+}
+
 export function trimEdgeEndpoints(
   x1: number,
   y1: number,

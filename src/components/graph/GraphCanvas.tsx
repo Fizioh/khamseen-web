@@ -7,6 +7,7 @@ type GraphStyle = {
   edgeActive: string;
   edgeGlow: string;
   nodeGlow: string;
+  edgeArrow: string;
   grid: string;
   vignette: string;
 };
@@ -45,6 +46,7 @@ export function GraphCanvas({
       edgeActive: `edge-active-${raw}`,
       edgeGlow: `edge-glow-${raw}`,
       nodeGlow: `node-glow-${raw}`,
+      edgeArrow: `edge-arrow-${raw}`,
       grid: `grid-${raw}`,
       vignette: `vignette-${raw}`,
     }),
@@ -97,12 +99,31 @@ export function GraphCanvas({
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
+            <marker
+              id={style.edgeArrow}
+              viewBox="0 0 8 8"
+              refX="7"
+              refY="4"
+              markerWidth="5"
+              markerHeight="5"
+              orient="auto"
+            >
+              <path d="M0,0 L8,4 L0,8 Z" fill="rgba(200,220,235,0.55)" />
+            </marker>
           </defs>
           <rect width={width} height={height} fill="#070708" />
           <rect width={width} height={height} fill={`url(#${style.grid})`} />
           <rect width={width} height={height} fill={`url(#${style.vignette})`} />
           {children}
         </svg>
+        <div
+          className="pointer-events-none absolute inset-0 rounded-md opacity-[0.035] mix-blend-screen"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.9) 3px)",
+          }}
+          aria-hidden
+        />
         <div
           className="pointer-events-none absolute inset-0 rounded-md ring-1 ring-inset ring-white/[0.03]"
           aria-hidden

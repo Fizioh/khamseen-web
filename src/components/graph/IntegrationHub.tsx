@@ -3,7 +3,11 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GraphCanvas, useGraphStyle } from "@/components/graph/GraphCanvas";
-import { curvedEdgePath, trimEdgeEndpoints } from "@/components/graph/graph-visual";
+import {
+  curvedEdgePath,
+  regularPolygonPath,
+  trimEdgeEndpoints,
+} from "@/components/graph/graph-visual";
 import {
   integrationChannels,
   integrationHubLabel,
@@ -35,7 +39,7 @@ function HubDiagram({
   inView: boolean;
 }) {
   const reduced = usePrefersReducedMotion();
-  const { edgeActive, edgeGlow, nodeGlow } = useGraphStyle();
+  const { edgeActive, edgeGlow, nodeGlow, edgeArrow } = useGraphStyle();
   const [hoverId, setHoverId] = useState<string | null>(null);
 
   return (
@@ -55,7 +59,9 @@ function HubDiagram({
               fill="none"
               stroke={lit ? `url(#${edgeActive})` : "rgba(255,255,255,0.12)"}
               strokeWidth={lit ? 1.35 : 0.9}
+              strokeDasharray={lit ? undefined : "2 4"}
               filter={lit ? `url(#${edgeGlow})` : undefined}
+              markerEnd={`url(#${edgeArrow})`}
             />
             {active && !reduced && (
               <motion.circle
@@ -81,20 +87,16 @@ function HubDiagram({
           </g>
         );
       })}
-      <motion.circle
-        cx={CX}
-        cy={CY}
-        r={HUB_R + 8}
+      <motion.path
+        d={regularPolygonPath(CX, CY, HUB_R + 10, 6, -90)}
         fill="none"
         stroke="rgba(122,158,196,0.25)"
         strokeWidth="1"
         animate={reduced || !inView ? {} : { opacity: [0.3, 0.7, 0.3] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
-      <circle
-        cx={CX}
-        cy={CY}
-        r={HUB_R}
+      <path
+        d={regularPolygonPath(CX, CY, HUB_R, 6, -90)}
         fill="#0c0c0e"
         stroke="rgba(232,232,234,0.4)"
         strokeWidth="1.5"
