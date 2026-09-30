@@ -3,11 +3,9 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { AgentGraph } from "@/components/graph/AgentGraph";
-import { LifecycleRail } from "@/components/graph/LifecycleRail";
 import { MobileTimeline } from "@/components/graph/MobileTimeline";
 import { HeroAgentCarousel } from "@/components/inspector/HeroAgentCarousel";
 import { CtaButton } from "@/components/design-system/CtaButton";
-import { SystemPanel } from "@/components/design-system/SystemPanel";
 import { agentMap } from "@/data/agents";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { heroItem, heroPanel, heroStagger, motionTransition } from "@/motion/presets";
@@ -25,16 +23,18 @@ export function HeroSection() {
 
   return (
     <section
-      className="relative pt-28 pb-16 md:pt-32 md:pb-24"
+      id="hero"
+      className="relative border-b border-border/50 pb-16 pt-24 md:pb-20 md:pt-28"
       aria-labelledby="hero-title"
       data-lifecycle-stage="IMPLEMENT"
     >
       <div className="mx-auto max-w-6xl px-4 md:px-6">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+        <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           <motion.div
             initial={reduced ? false : "hidden"}
             animate="visible"
             variants={heroStagger}
+            className="min-w-0"
           >
             <motion.p
               variants={heroItem}
@@ -76,41 +76,32 @@ export function HeroSection() {
                 JOIN WAITLIST
               </CtaButton>
             </motion.div>
-            <motion.div
-              variants={heroItem}
-              transition={motionTransition(reduced)}
-              className="mt-8 hidden md:block"
-            >
-              <LifecycleRail activeStage="IMPLEMENT" emphasizeCurrent />
-            </motion.div>
           </motion.div>
 
           <motion.div
-            className="space-y-4"
+            className="min-w-0 space-y-3"
             initial={reduced ? false : "hidden"}
             animate="visible"
             variants={heroStagger}
           >
-            <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.25 }}>
-              <SystemPanel className="hidden p-3 md:block lg:p-4">
-                <div className="mb-2 flex items-center justify-between font-mono text-[10px] text-muted">
+            <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.2 }}>
+              <div className="hidden md:block">
+                <div className="mb-2 flex items-center justify-between gap-2 font-mono text-[10px] text-muted">
                   <span>TOPOLOGY / RUN #1842</span>
-                  <span className="text-signal-active">DELEGATE → IMPLEMENT</span>
+                  <span className="shrink-0 text-signal-active">DELEGATE → IMPLEMENT</span>
                 </div>
-                <div className="hidden md:block">
-                  <AgentGraph
-                    variant="compact"
-                    selectedId={selected === null ? null : selected.id}
-                    onSelect={selectFromGraph}
-                    pulseEdgeIds={["e-nadir-khepri", "e-khepri-aegis"]}
-                  />
-                </div>
-              </SystemPanel>
+                <AgentGraph
+                  variant="compact"
+                  selectedId={selected === null ? null : selected.id}
+                  onSelect={selectFromGraph}
+                  pulseEdgeIds={["e-nadir-khepri", "e-khepri-aegis"]}
+                />
+              </div>
             </motion.div>
-            <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.38 }}>
+            <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.32 }}>
               <MobileTimeline />
             </motion.div>
-            <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.48 }}>
+            <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.42 }}>
               <HeroAgentCarousel
                 selected={selected}
                 onSelect={setSelected}
