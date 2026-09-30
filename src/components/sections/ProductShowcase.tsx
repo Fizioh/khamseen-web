@@ -184,7 +184,7 @@ export function ModuleSnippetBlock() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <CtaButton href="#waitlist">REQUEST EARLY ACCESS →</CtaButton>
-            <CtaButton href="#roadmap" variant="secondary">
+            <CtaButton href="/platform#roadmap" variant="secondary">
               ROADMAP
             </CtaButton>
           </div>

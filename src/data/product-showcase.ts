@@ -3,25 +3,25 @@ export const productPillars = [
     id: "delegate",
     title: "Delegate",
     summary: "Outcomes become tasks on the graph — chiefs route work without prompt chains.",
-    href: "#delegate",
+    href: "/platform#delegate",
   },
   {
     id: "verify",
     title: "Verify",
     summary: "Independent reviewers, tests, and policy gates before anything advances.",
-    href: "#verify",
+    href: "/platform#verify",
   },
   {
     id: "approve",
     title: "Approve",
     summary: "Human Authority at meaningful gates — merge, deploy, spend, exceptions.",
-    href: "#human-authority",
+    href: "/platform#human-authority",
   },
   {
     id: "integrate",
     title: "Integrate",
     summary: "Slack, WhatsApp, webhooks, MCP — adapters into the same lifecycle kernel.",
-    href: "#integrations",
+    href: "/integrations",
   },
 ];
 

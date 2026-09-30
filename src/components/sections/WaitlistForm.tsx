@@ -59,7 +59,7 @@ export function WaitlistForm() {
         >
           {status === "loading" ? "SENDING…" : "JOIN WAITLIST"}
         </button>
-        <CtaButton href="#demo" variant="secondary">
+        <CtaButton href="/demo" variant="secondary">
           VIEW LIVE TRACE
         </CtaButton>
       </div>

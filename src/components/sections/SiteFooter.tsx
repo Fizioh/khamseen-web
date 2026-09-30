@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-border py-10">
@@ -14,30 +16,27 @@ export function SiteFooter() {
             className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-[10px] tracking-wide text-muted"
             aria-label="Footer"
           >
-            <a href="#control-room" className="hover:text-foreground">
+            <Link href="/" className="hover:text-foreground">
+              Home
+            </Link>
+            <Link href="/platform" className="hover:text-foreground">
+              Platform
+            </Link>
+            <Link href="/platform#control-room" className="hover:text-foreground">
               Control room
-            </a>
-            <a href="#waitlist" className="hover:text-foreground">
-              Waitlist
-            </a>
-            <a href="#control-plane" className="hover:text-foreground">
-              Narrative
-            </a>
-            <a href="#integrations" className="hover:text-foreground">
+            </Link>
+            <Link href="/integrations" className="hover:text-foreground">
               Integrations
-            </a>
-            <a href="#demo" className="hover:text-foreground">
-              Execution trace
-            </a>
-            <a href="#faq" className="hover:text-foreground">
+            </Link>
+            <Link href="/demo" className="hover:text-foreground">
+              Live trace
+            </Link>
+            <Link href="/platform#faq" className="hover:text-foreground">
               FAQ
-            </a>
-            <a href="#modules" className="hover:text-foreground">
-              Sub-modules
-            </a>
-            <a href="#roadmap" className="hover:text-foreground">
-              Roadmap
-            </a>
+            </Link>
+            <Link href="/#waitlist" className="hover:text-foreground">
+              Waitlist
+            </Link>
           </nav>
         </div>
         <p className="mt-8 font-mono text-[10px] text-muted/80">

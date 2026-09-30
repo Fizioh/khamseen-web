@@ -8,8 +8,6 @@ import { useRef, useState } from "react";
 
 import { ScrollReactiveGraph } from "@/components/graph/ScrollReactiveGraph";
 
-import { ExecutionFlow } from "@/components/execution/ExecutionFlow";
-
 import {
 
   ComparisonTable,
@@ -19,8 +17,6 @@ import {
   SubModulesSection,
 
   ExecuteGrid,
-
-  IntegrationsSection,
 
   FaqList,
 
@@ -284,7 +280,7 @@ export function NarrativeSections() {
 
       <NarrativeBlock
 
-        id="integrations"
+        id="integrations-teaser"
 
         index="05"
 
@@ -292,11 +288,23 @@ export function NarrativeSections() {
 
         stage="DELEGATE"
 
-        intro="Adapters connect humans and external systems without bypassing the kernel. Chat, mail, webhooks, and MCP normalize into the same graph."
+        intro="Slack, WhatsApp, webhooks, MCP — same kernel gates on every adapter."
 
       >
 
-        <IntegrationsSection />
+        <SystemPanel className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+
+          <p className="max-w-lg text-sm text-muted">
+
+            Interactive hub with ingress/egress contracts and scenario walkthroughs lives on the
+
+            Integrations page.
+
+          </p>
+
+          <CtaButton href="/integrations">OPEN INTEGRATIONS →</CtaButton>
+
+        </SystemPanel>
 
       </NarrativeBlock>
 
@@ -580,31 +588,27 @@ export function NarrativeSections() {
 
 
 
-      <NarrativeBlock id="demo" index="—" title="Live execution trace" stage="QA">
-
-        <ExecutionFlow />
-
-      </NarrativeBlock>
-
-
-
       <section className="border-t border-border py-20 text-center">
 
         <h2 className="text-2xl font-medium md:text-3xl">Mount your modules on one OS.</h2>
 
         <p className="mx-auto mt-4 max-w-lg text-sm text-muted">
 
-          Explore the kernel narrative, inspect the graph, then follow task KHA-142 through
+          Follow task KHA-142 on the live trace demo, or join the waitlist for API-backed Control
 
-          delegation, review, remediation, and approval — the same path every module uses.
+          Center access.
 
         </p>
 
         <div className="mt-8 flex flex-wrap justify-center gap-4">
 
-          <CtaButton href="#control-plane">ENTER THE SYSTEM →</CtaButton>
+          <CtaButton href="/demo">VIEW LIVE TRACE →</CtaButton>
 
-          <CtaButton href="#faq">READ FAQ</CtaButton>
+          <CtaButton href="/#waitlist" variant="secondary">
+
+            JOIN WAITLIST
+
+          </CtaButton>
 
         </div>
 

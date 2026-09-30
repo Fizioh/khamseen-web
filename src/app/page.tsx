@@ -1,33 +1,16 @@
-import { ScrollLifecycleBar } from "@/components/layout/ScrollLifecycleBar";
+import { SiteShell } from "@/components/layout/SiteShell";
+import { HomeExplore } from "@/components/sections/HomeExplore";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { NarrativeSections } from "@/components/sections/NarrativeSections";
-import {
-  AutonomyLadder,
-  ModuleSnippetBlock,
-  OpsControlRoom,
-  ProductPillars,
-  TrustStrip,
-  WaitlistCta,
-} from "@/components/sections/ProductShowcase";
-import { SiteFooter } from "@/components/sections/SiteFooter";
-import { SiteHeader } from "@/components/sections/SiteHeader";
+import { ProductPillars, TrustStrip, WaitlistCta } from "@/components/sections/ProductShowcase";
 
 export default function Home() {
   return (
-    <>
-      <SiteHeader />
-      <main>
-        <HeroSection />
-        <TrustStrip />
-        <ProductPillars />
-        <OpsControlRoom />
-        <AutonomyLadder />
-        <ModuleSnippetBlock />
-        <ScrollLifecycleBar />
-        <NarrativeSections />
-        <WaitlistCta />
-      </main>
-      <SiteFooter />
-    </>
+    <SiteShell>
+      <HeroSection />
+      <TrustStrip />
+      <ProductPillars />
+      <HomeExplore />
+      <WaitlistCta />
+    </SiteShell>
   );
 }

@@ -71,8 +71,8 @@ export function HeroSection() {
               transition={motionTransition(reduced)}
               className="mt-8 flex flex-wrap gap-3"
             >
-              <CtaButton href="#demo">VIEW LIVE TRACE →</CtaButton>
-              <CtaButton href="#waitlist" variant="secondary">
+              <CtaButton href="/demo">VIEW LIVE TRACE →</CtaButton>
+              <CtaButton href="/#waitlist" variant="secondary">
                 JOIN WAITLIST
               </CtaButton>
             </motion.div>
