@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { mainNav } from "@/config/site-nav";
+import { githubLinks } from "@/config/site-links";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 export function SiteHeader() {
@@ -42,6 +43,14 @@ export function SiteHeader() {
           >
             WAITLIST
           </Link>
+          <a
+            href={githubLinks.os}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-1 rounded px-2.5 py-1.5 text-muted hover:text-foreground"
+          >
+            GITHUB
+          </a>
         </nav>
         <div className="flex items-center gap-3 font-mono text-[10px] tracking-widest text-muted">
           <nav className="flex gap-1 md:hidden" aria-label="Main mobile">
@@ -54,6 +63,14 @@ export function SiteHeader() {
                 {item.label.split(" ")[0]}
               </Link>
             ))}
+            <a
+              href={githubLinks.os}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded px-2 py-1 text-[9px] text-muted hover:text-foreground"
+            >
+              GH
+            </a>
           </nav>
           <span className="hidden h-3 w-px bg-border sm:block" aria-hidden />
           <span className="hidden items-center gap-1.5 text-signal-ok sm:inline-flex">

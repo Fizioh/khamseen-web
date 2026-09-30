@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { githubLinks } from "@/config/site-links";
 
 export function SiteFooter() {
   return (
@@ -37,6 +38,22 @@ export function SiteFooter() {
             <Link href="/#waitlist" className="hover:text-foreground">
               Waitlist
             </Link>
+            <a
+              href={githubLinks.os}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground"
+            >
+              GitHub · khamseen-os
+            </a>
+            <a
+              href={githubLinks.web}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground"
+            >
+              GitHub · khamseen-web
+            </a>
           </nav>
         </div>
         <p className="mt-8 font-mono text-[10px] text-muted/80">

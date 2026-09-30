@@ -4,7 +4,7 @@ Production landing page for **Khamseen** — the agent operating system for buil
 
 > **One human. Fifty agents. One operating system.**
 
-This repository is the public-facing web surface for the Khamseen product narrative. It is intentionally separate from the [Khamseen OS](https://github.com/Fizioh/khamseen) control-plane monorepo: no backend orchestration here, only structured demo data designed to be swapped for real API/event streams later.
+This repository is the public-facing web surface for the Khamseen product narrative. It is intentionally separate from the [Khamseen OS open core](https://github.com/Fizioh/khamseen-os): no backend orchestration here, only structured demo data designed to be swapped for real API/event streams later.
 
 ## Design direction
 
