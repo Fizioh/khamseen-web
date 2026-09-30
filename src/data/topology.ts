@@ -8,7 +8,7 @@ export const topologyEdges: Edge[] = [
   { id: "e-aegis-human", from: "aegis", to: "human", label: "approve" },
   { id: "e-nadir-sentinel", from: "nadir", to: "sentinel", label: "scan" },
   { id: "e-nadir-pulse", from: "nadir", to: "pulse", label: "observe" },
-  { id: "e-nadir-merchant", from: "nadir", to: "merchant", label: "domain" },
+  { id: "e-nadir-merchant", from: "nadir", to: "merchant", label: "module" },
 ];
 
 export const lifecycleStages = [

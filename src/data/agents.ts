@@ -12,7 +12,7 @@ export const agents: Agent[] = [
     ],
     permissions: [
       { label: "Production", value: "gated" },
-      { label: "All domains", value: "scoped" },
+      { label: "All modules", value: "scoped" },
     ],
     runtime: {
       state: "HUMAN_REQUIRED",
@@ -141,14 +141,14 @@ export const agents: Agent[] = [
   {
     id: "merchant",
     codename: "MERCHANT",
-    role: "Commerce",
+    role: "Sub-module worker",
     capabilities: [
-      { id: "catalog.read", label: "catalog.read" },
-      { id: "order.sync", label: "order.sync" },
+      { id: "module.task", label: "module.task" },
+      { id: "module.read", label: "module.read" },
     ],
     permissions: [
-      { label: "Payments", value: "denied" },
-      { label: "Catalog", value: "scoped" },
+      { label: "Kernel", value: "read-only" },
+      { label: "Module data", value: "scoped" },
     ],
     runtime: {
       state: "IDLE",

@@ -54,3 +54,12 @@ export const executionSteps: ExecutionStep[] = [
     delayMs: 4000,
   },
 ];
+
+export const executionStepPulseEdges: Record<string, string[]> = {
+  s1: ["e-human-nadir", "e-nadir-khepri"],
+  s2: ["e-nadir-khepri"],
+  s3: ["e-khepri-aegis"],
+  s4: ["e-nadir-khepri", "e-khepri-aegis"],
+  s5: ["e-khepri-aegis", "e-aegis-human"],
+  s6: ["e-aegis-human"],
+};
