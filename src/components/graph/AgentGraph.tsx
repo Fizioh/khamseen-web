@@ -77,7 +77,7 @@ function AgentGraphSvg({
   );
 
   const w = 560;
-  const h = 420;
+  const h = 440;
 
   return (
     <>
@@ -229,33 +229,48 @@ function AgentGraphSvg({
               opacity={agent.runtime.state === "IDLE" ? 0.35 : 0.95}
               pointerEvents="none"
             />
-            <rect
-              x={cx - 42}
-              y={cy - r - 22}
-              width={84}
-              height={14}
-              rx={2}
-              fill="rgba(7,7,8,0.85)"
-              stroke="rgba(255,255,255,0.06)"
-              pointerEvents="none"
-            />
-            <text
-              x={cx}
-              y={cy - r - 12}
-              textAnchor="middle"
-              className={`font-mono text-[8px] tracking-wider pointer-events-none select-none ${
-                focus ? "fill-foreground" : "fill-foreground/75"
-              }`}
-            >
-              {agent.codename}
-            </text>
-            {selected && (
-              <foreignObject x={cx - 40} y={cy + r + 6} width="80" height="22">
-                <div className="flex justify-center">
-                  <StateBadge state={agent.runtime.state} />
-                </div>
-              </foreignObject>
-            )}
+            {(() => {
+              const labelW = agent.tier === "human" ? 108 : agent.codename.length > 12 ? 96 : 84;
+              const badgeW = agent.runtime.state.length > 12 ? 132 : 96;
+              const badgeH = 26;
+              return (
+                <>
+                  <rect
+                    x={cx - labelW / 2}
+                    y={cy - r - 22}
+                    width={labelW}
+                    height={14}
+                    rx={2}
+                    fill="rgba(7,7,8,0.85)"
+                    stroke="rgba(255,255,255,0.06)"
+                    pointerEvents="none"
+                  />
+                  <text
+                    x={cx}
+                    y={cy - r - 12}
+                    textAnchor="middle"
+                    className={`font-mono text-[8px] tracking-wider pointer-events-none select-none ${
+                      focus ? "fill-foreground" : "fill-foreground/75"
+                    }`}
+                  >
+                    {agent.tier === "human" ? "HUMAN AUTH." : agent.codename}
+                  </text>
+                  {selected && (
+                    <foreignObject
+                      x={cx - badgeW / 2}
+                      y={cy + r + 8}
+                      width={badgeW}
+                      height={badgeH}
+                      overflow="visible"
+                    >
+                      <div className="flex justify-center overflow-visible">
+                        <StateBadge state={agent.runtime.state} />
+                      </div>
+                    </foreignObject>
+                  )}
+                </>
+              );
+            })()}
           </g>
         );
       })}

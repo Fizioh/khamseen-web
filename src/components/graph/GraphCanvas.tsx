@@ -56,7 +56,7 @@ export function GraphCanvas({
   return (
     <GraphStyleContext.Provider value={style}>
       <div
-        className={`relative overflow-hidden rounded-md border border-border/80 bg-[#060607] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] ${className}`}
+        className={`relative overflow-visible rounded-md border border-border/80 bg-[#060607] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] ${className}`}
       >
         <svg
           viewBox={`0 0 ${width} ${height}`}

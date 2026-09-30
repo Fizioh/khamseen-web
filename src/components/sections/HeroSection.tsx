@@ -29,12 +29,12 @@ export function HeroSection() {
       data-lifecycle-stage="IMPLEMENT"
     >
       <div className="mx-auto max-w-6xl px-4 md:px-6">
-        <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+        <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
           <motion.div
             initial={reduced ? false : "hidden"}
             animate="visible"
             variants={heroStagger}
-            className="min-w-0"
+            className="flex min-w-0 flex-col"
           >
             <motion.p
               variants={heroItem}
@@ -76,6 +76,17 @@ export function HeroSection() {
                 JOIN WAITLIST
               </CtaButton>
             </motion.div>
+            <motion.div
+              variants={heroPanel}
+              transition={{ ...motionTransition(reduced), delay: 0.35 }}
+              className="mt-8 hidden min-w-0 lg:block"
+            >
+              <HeroAgentCarousel
+                selected={selected}
+                onSelect={setSelected}
+                graphSelectionEpoch={graphSelectionEpoch}
+              />
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -101,7 +112,11 @@ export function HeroSection() {
             <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.32 }}>
               <MobileTimeline />
             </motion.div>
-            <motion.div variants={heroPanel} transition={{ ...motionTransition(reduced), delay: 0.42 }}>
+            <motion.div
+              variants={heroPanel}
+              transition={{ ...motionTransition(reduced), delay: 0.42 }}
+              className="lg:hidden"
+            >
               <HeroAgentCarousel
                 selected={selected}
                 onSelect={setSelected}
