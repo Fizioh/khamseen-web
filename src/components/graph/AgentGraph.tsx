@@ -31,7 +31,8 @@ export function AgentGraph({
 }: AgentGraphProps) {
   const reduced = usePrefersReducedMotion();
   const [internalSelected, setInternalSelected] = useState<string | null>("khepri");
-  const activeId = selectedId ?? internalSelected;
+  const isControlled = selectedId !== undefined;
+  const activeId = isControlled ? selectedId : internalSelected;
 
   const visibleAgents = useMemo(() => {
     if (variant === "minimal") {
@@ -67,7 +68,7 @@ export function AgentGraph({
       <svg
         viewBox={`0 0 ${w} ${h}`}
         className="h-auto w-full max-h-[420px]"
-        role="img"
+        role="group"
         aria-label="Agent orchestration topology"
       >
         <defs>

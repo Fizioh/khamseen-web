@@ -47,7 +47,7 @@ export function HeroSection() {
               <div className="hidden md:block">
                 <AgentGraph
                   variant="compact"
-                  selectedId={selected?.id ?? null}
+                  selectedId={selected === null ? null : selected.id}
                   onSelect={setSelected}
                   pulseEdgeIds={["e-nadir-khepri", "e-khepri-aegis"]}
                 />
