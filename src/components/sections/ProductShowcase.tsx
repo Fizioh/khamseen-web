@@ -3,7 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { CtaButton } from "@/components/design-system/CtaButton";
-import { WaitlistForm } from "@/components/sections/WaitlistForm";
+import { githubLinks } from "@/config/site-links";
 import { SystemPanel } from "@/components/design-system/SystemPanel";
 import {
   autonomyLevels,
@@ -183,7 +183,9 @@ export function ModuleSnippetBlock() {
             Orchestration stays shared.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <CtaButton href="#waitlist">REQUEST EARLY ACCESS →</CtaButton>
+            <CtaButton href={githubLinks.os} target="_blank" rel="noopener noreferrer">
+              OPEN ON GITHUB →
+            </CtaButton>
             <CtaButton href="/platform#roadmap" variant="secondary">
               ROADMAP
             </CtaButton>
@@ -212,25 +214,6 @@ export function TrustStrip() {
             <p className="text-[11px] text-muted">{t.detail}</p>
           </div>
         ))}
-      </div>
-    </section>
-  );
-}
-
-export function WaitlistCta() {
-  return (
-    <section id="waitlist" className="py-16 md:py-20">
-      <div className="mx-auto max-w-6xl px-4 md:px-6">
-        <SystemPanel className="mx-auto max-w-2xl p-8 text-center">
-          <p className="font-mono text-[10px] tracking-widest text-muted uppercase">Early access</p>
-          <h2 className="mt-3 text-xl font-medium md:text-2xl">Control Center · API-backed runs</h2>
-          <p className="mt-3 text-sm text-muted">
-            M2 connects this narrative to live graphs. Join the waitlist — we notify{" "}
-            <span className="font-mono text-foreground/80">waitlist@khamseen.tech</span> and send
-            you a confirmation from the same address.
-          </p>
-          <WaitlistForm />
-        </SystemPanel>
       </div>
     </section>
   );

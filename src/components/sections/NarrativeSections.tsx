@@ -594,9 +594,7 @@ export function NarrativeSections() {
 
         <p className="mx-auto mt-4 max-w-lg text-sm text-muted">
 
-          Follow task KHA-142 on the live trace demo, or join the waitlist for API-backed Control
-
-          Center access.
+          Follow task KHA-142 on the live trace demo, or explore the open core on GitHub.
 
         </p>
 
@@ -604,9 +602,9 @@ export function NarrativeSections() {
 
           <CtaButton href="/demo">VIEW LIVE TRACE →</CtaButton>
 
-          <CtaButton href="/#waitlist" variant="secondary">
+          <CtaButton href="https://github.com/Fizioh/khamseen-os" target="_blank" rel="noopener noreferrer" variant="secondary">
 
-            JOIN WAITLIST
+            OPEN ON GITHUB →
 
           </CtaButton>
 

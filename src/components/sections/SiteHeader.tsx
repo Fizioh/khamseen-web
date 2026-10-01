@@ -37,12 +37,6 @@ export function SiteHeader() {
               </Link>
             );
           })}
-          <Link
-            href="/#waitlist"
-            className="ml-2 rounded px-2.5 py-1.5 text-muted hover:text-foreground"
-          >
-            WAITLIST
-          </Link>
           <a
             href={githubLinks.os}
             target="_blank"

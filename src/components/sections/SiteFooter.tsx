@@ -35,9 +35,6 @@ export function SiteFooter() {
             <Link href="/platform#faq" className="hover:text-foreground">
               FAQ
             </Link>
-            <Link href="/#waitlist" className="hover:text-foreground">
-              Waitlist
-            </Link>
             <a
               href={githubLinks.os}
               target="_blank"

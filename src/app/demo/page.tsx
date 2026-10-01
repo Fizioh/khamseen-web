@@ -2,6 +2,7 @@ import { PageIntro } from "@/components/layout/PageIntro";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { ExecutionFlow } from "@/components/execution/ExecutionFlow";
 import { CtaButton } from "@/components/design-system/CtaButton";
+import { githubLinks } from "@/config/site-links";
 
 export const metadata = {
   title: "Live trace — Khamseen",
@@ -20,8 +21,8 @@ export default function DemoPage() {
         <ExecutionFlow />
         <div className="mt-12 flex flex-wrap gap-3">
           <CtaButton href="/platform">EXPLORE PLATFORM →</CtaButton>
-          <CtaButton href="/#waitlist" variant="secondary">
-            JOIN WAITLIST
+          <CtaButton href={githubLinks.os} target="_blank" rel="noopener noreferrer" variant="secondary">
+            OPEN ON GITHUB →
           </CtaButton>
         </div>
       </div>
