@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { AgentGraph } from "@/components/graph/AgentGraph";
@@ -88,9 +89,9 @@ export function HeroSection() {
               transition={motionTransition(reduced)}
               className="mt-4 font-mono text-[10px] tracking-wide text-muted"
             >
-              <a href="/#waitlist" className="text-foreground/70 underline-offset-2 hover:text-accent hover:underline">
+              <Link href="/#waitlist" className="text-foreground/70 underline-offset-2 hover:text-accent hover:underline">
                 Join waitlist
-              </a>
+              </Link>
               {" · "}
               experimental alpha on{" "}
               <a
