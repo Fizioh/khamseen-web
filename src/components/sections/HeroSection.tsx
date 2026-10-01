@@ -6,6 +6,7 @@ import { AgentGraph } from "@/components/graph/AgentGraph";
 import { MobileTimeline } from "@/components/graph/MobileTimeline";
 import { HeroAgentCarousel } from "@/components/inspector/HeroAgentCarousel";
 import { CtaButton } from "@/components/design-system/CtaButton";
+import { githubLinks } from "@/config/site-links";
 import { agentMap } from "@/data/agents";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { heroItem, heroPanel, heroStagger, motionTransition } from "@/motion/presets";
@@ -71,11 +72,36 @@ export function HeroSection() {
               transition={motionTransition(reduced)}
               className="mt-8 flex flex-wrap gap-3"
             >
-              <CtaButton href="/demo">VIEW LIVE TRACE →</CtaButton>
-              <CtaButton href="/#waitlist" variant="secondary">
-                JOIN WAITLIST
+              <CtaButton
+                href={githubLinks.os}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                OPEN ON GITHUB →
+              </CtaButton>
+              <CtaButton href="/demo" variant="secondary">
+                VIEW LIVE TRACE →
               </CtaButton>
             </motion.div>
+            <motion.p
+              variants={heroItem}
+              transition={motionTransition(reduced)}
+              className="mt-4 font-mono text-[10px] tracking-wide text-muted"
+            >
+              <a href="/#waitlist" className="text-foreground/70 underline-offset-2 hover:text-accent hover:underline">
+                Join waitlist
+              </a>
+              {" · "}
+              experimental alpha on{" "}
+              <a
+                href={githubLinks.os}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground/70 underline-offset-2 hover:text-accent hover:underline"
+              >
+                khamseen-os
+              </a>
+            </motion.p>
             <motion.div
               variants={heroPanel}
               transition={{ ...motionTransition(reduced), delay: 0.35 }}

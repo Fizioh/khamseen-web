@@ -39,7 +39,7 @@ export function SiteHeader() {
           })}
           <Link
             href="/#waitlist"
-            className="ml-2 rounded border border-accent/30 px-2.5 py-1.5 text-accent hover:bg-accent/10"
+            className="ml-2 rounded px-2.5 py-1.5 text-muted hover:text-foreground"
           >
             WAITLIST
           </Link>
@@ -47,9 +47,9 @@ export function SiteHeader() {
             href={githubLinks.os}
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-1 rounded px-2.5 py-1.5 text-muted hover:text-foreground"
+            className="ml-1 rounded border border-accent/30 bg-accent/5 px-2.5 py-1.5 text-accent hover:border-accent/60 hover:bg-accent/10"
           >
-            GITHUB
+            GITHUB →
           </a>
         </nav>
         <div className="flex items-center gap-3 font-mono text-[10px] tracking-widest text-muted">
@@ -67,9 +67,9 @@ export function SiteHeader() {
               href={githubLinks.os}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded px-2 py-1 text-[9px] text-muted hover:text-foreground"
+              className="rounded border border-accent/30 px-2 py-1 text-[9px] text-accent"
             >
-              GH
+              GITHUB
             </a>
           </nav>
           <span className="hidden h-3 w-px bg-border sm:block" aria-hidden />
