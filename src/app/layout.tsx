@@ -13,6 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://khamseen.tech",
+  ),
   title: "Khamseen — One human. Fifty agents. One operating system.",
   description:
     "Build, delegate, review and operate autonomous AI teams. Khamseen is an agent operating system for agentic organizations.",
