@@ -127,7 +127,7 @@ export function DealsCatalog({ deals, sourceLabel }: DealsCatalogProps) {
             Aucune offre pour ces filtres. Élargissez la catégorie ou l&apos;enseigne.
           </p>
         ) : (
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-3 md:grid-cols-2">
             {filtered.map((deal, index) => (
               <motion.li
                 key={deal.id}
