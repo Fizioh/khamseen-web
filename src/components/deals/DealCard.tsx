@@ -10,40 +10,37 @@ export function DealCard({ deal }: DealCardProps) {
   const remise = discountPercent(deal);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded border border-border bg-surface/40 transition-colors hover:border-accent/35">
+    <article className="group flex h-full gap-3 overflow-hidden rounded border border-border bg-surface/40 p-3 transition-colors hover:border-accent/35 sm:gap-4 sm:p-4">
       <div
-        className="relative flex aspect-[4/3] items-end overflow-hidden p-4"
+        className="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded border border-border/80 sm:h-28 sm:w-28"
         style={{
-          background: `linear-gradient(145deg, ${deal.imageTone} 0%, #0a0a0c 72%)`,
+          background: `linear-gradient(145deg, ${deal.imageTone} 0%, #0a0a0c 85%)`,
         }}
       >
         {deal.imageUrl ? (
           <Image
             src={deal.imageUrl}
             alt=""
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover opacity-90 transition-transform duration-500 group-hover:scale-[1.03]"
+            width={112}
+            height={112}
+            sizes="112px"
+            className="h-full w-full object-contain p-1.5"
             unoptimized
           />
         ) : (
-          <div className="pointer-events-none absolute inset-0 opacity-40" aria-hidden>
-            <div
-              className="absolute -right-8 -top-10 h-40 w-40 rounded-full blur-2xl"
-              style={{ background: "rgba(232,232,234,0.12)" }}
-            />
-          </div>
+          <span className="font-mono text-[10px] tracking-wide text-muted">
+            {deal.category.slice(0, 2).toUpperCase()}
+          </span>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
         {remise > 0 ? (
-          <span className="relative z-10 rounded border border-white/15 bg-black/45 px-2 py-1 font-mono text-[10px] tracking-wide text-foreground backdrop-blur-sm">
+          <span className="absolute left-1 top-1 rounded border border-white/15 bg-black/55 px-1.5 py-0.5 font-mono text-[9px] tracking-wide text-foreground">
             −{remise}&nbsp;%
           </span>
         ) : null}
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <div className="space-y-1.5">
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <div className="space-y-1">
           <p className="font-mono text-[10px] tracking-[0.18em] text-muted uppercase">
             {deal.retailer} · {deal.category}
           </p>
@@ -52,8 +49,8 @@ export function DealCard({ deal }: DealCardProps) {
           </h3>
         </div>
 
-        <div className="mt-auto space-y-3">
-          <div className="flex items-baseline gap-2">
+        <div className="mt-auto space-y-2.5">
+          <div className="flex flex-wrap items-baseline gap-2">
             <span className="text-lg font-medium tracking-tight text-foreground">
               {formatEuro(deal.priceNow)}
             </span>
@@ -71,7 +68,7 @@ export function DealCard({ deal }: DealCardProps) {
             href={deal.url}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="inline-flex w-full items-center justify-center rounded border border-accent/30 bg-accent/5 px-3 py-2 font-mono text-[11px] tracking-wide text-accent transition-colors hover:border-accent/60 hover:bg-accent/10"
+            className="inline-flex w-full items-center justify-center rounded border border-accent/30 bg-accent/5 px-3 py-2 font-mono text-[11px] tracking-wide text-accent transition-colors hover:border-accent/60 hover:bg-accent/10 sm:w-auto sm:self-start"
           >
             Voir l&apos;offre →
           </a>
