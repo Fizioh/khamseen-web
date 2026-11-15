@@ -5,23 +5,31 @@ import { motion } from "framer-motion";
 import {
   dealCategories,
   discountPercent,
-  retailersFromDeals,
   type Deal,
   type DealCategory,
   type DealSort,
-} from "@/data/deals";
+} from "@/lib/deals/types";
 import { DealCard } from "@/components/deals/DealCard";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 interface DealsCatalogProps {
   deals: Deal[];
+  sourceLabel?: string;
 }
 
-export function DealsCatalog({ deals }: DealsCatalogProps) {
+export function DealsCatalog({ deals, sourceLabel }: DealsCatalogProps) {
   const reduced = usePrefersReducedMotion();
   const [category, setCategory] = useState<DealCategory | "Toutes">("Toutes");
   const [retailer, setRetailer] = useState<string>("Toutes");
   const [sort, setSort] = useState<DealSort>("remise");
+
+  const retailers = useMemo(
+    () =>
+      Array.from(new Set(deals.map((deal) => deal.retailer))).sort((a, b) =>
+        a.localeCompare(b, "fr"),
+      ),
+    [deals],
+  );
 
   const filtered = useMemo(() => {
     const list = deals.filter((deal) => {
@@ -32,7 +40,9 @@ export function DealsCatalog({ deals }: DealsCatalogProps) {
 
     return [...list].sort((a, b) => {
       if (sort === "remise") {
-        return discountPercent(b) - discountPercent(a);
+        const diff = discountPercent(b) - discountPercent(a);
+        if (diff !== 0) return diff;
+        return b.verifiedAt.localeCompare(a.verifiedAt);
       }
       return b.verifiedAt.localeCompare(a.verifiedAt) || discountPercent(b) - discountPercent(a);
     });
@@ -49,6 +59,9 @@ export function DealsCatalog({ deals }: DealsCatalogProps) {
             <h2 id="offres-heading" className="mt-2 text-2xl font-medium tracking-tight">
               Offres du moment
             </h2>
+            {sourceLabel ? (
+              <p className="mt-2 text-xs text-muted">{sourceLabel}</p>
+            ) : null}
           </div>
           <p className="font-mono text-[11px] text-muted" aria-live="polite">
             {filtered.length} offre{filtered.length > 1 ? "s" : ""}
@@ -86,7 +99,7 @@ export function DealsCatalog({ deals }: DealsCatalogProps) {
               className="rounded border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-accent/50"
             >
               <option value="Toutes">Toutes</option>
-              {retailersFromDeals.map((item) => (
+              {retailers.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>

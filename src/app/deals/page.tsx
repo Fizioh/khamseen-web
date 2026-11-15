@@ -6,7 +6,9 @@ import { DealsFooter } from "@/components/deals/DealsFooter";
 import { DealsHeader } from "@/components/deals/DealsHeader";
 import { DealsHero } from "@/components/deals/DealsHero";
 import { SelectionMethod } from "@/components/deals/SelectionMethod";
-import { deals } from "@/data/deals";
+import { getDeals } from "@/lib/deals/getDeals";
+
+export const revalidate = 1800;
 
 export const metadata: Metadata = {
   title: "Khamseen Deals — Promos high-tech, maison et jeux en France",
@@ -29,13 +31,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DealsPage() {
+const sourceCopy = {
+  dealabs:
+    "Flux live Dealabs (nouveautés + tendance), filtré high-tech / maison / jeux — rafraîchi toutes les 30 min.",
+  json: "Flux JSON personnalisé (DEALS_FEED_URL) — rafraîchi toutes les 15 min.",
+  seed: "Catalogue de secours local — le flux live est temporairement indisponible.",
+} as const;
+
+export default async function DealsPage() {
+  const { deals, source } = await getDeals();
+
   return (
     <>
       <DealsHeader />
       <main id="main-content">
         <DealsHero />
-        <DealsCatalog deals={deals} />
+        <DealsCatalog deals={deals} sourceLabel={sourceCopy[source]} />
         <SelectionMethod />
         <AffiliationNotice />
       </main>

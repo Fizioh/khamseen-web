@@ -13,8 +13,9 @@ describe("deals catalog", () => {
     }
   });
 
-  it("keeps promo prices below struck prices", () => {
+  it("keeps promo prices below struck prices when present", () => {
     for (const deal of deals) {
+      if (deal.priceWas === undefined) continue;
       expect(deal.priceNow).toBeLessThan(deal.priceWas);
       expect(discountPercent(deal)).toBeGreaterThan(0);
     }
