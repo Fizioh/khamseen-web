@@ -32,6 +32,18 @@ export function SiteFooter() {
             <Link href="/demo" className="hover:text-foreground">
               Live trace
             </Link>
+            <Link href="/deals" className="hover:text-foreground">
+              Deals
+            </Link>
+            <Link href="/mentions-legales" className="hover:text-foreground">
+              Mentions légales
+            </Link>
+            <Link
+              href="/politique-de-confidentialite"
+              className="hover:text-foreground"
+            >
+              Confidentialité
+            </Link>
             <Link href="/platform#faq" className="hover:text-foreground">
               FAQ
             </Link>
